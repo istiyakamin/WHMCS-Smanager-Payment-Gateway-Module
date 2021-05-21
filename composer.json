@@ -1,0 +1,26 @@
+{
+    "name": "whmcs/smanager-gateway-module",
+    "description": "Smanager Payment Gateway Module for the WHMCS Billing Automation Platform",
+    "keywords": [
+        "whmcs",
+        "web host automation platform",
+        "third party gateway module",
+        "gateway module",
+        "third party gateway"
+    ],
+    "homepage": "http://www.shaperk.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Istiyak Amin",
+            "email": "istiyakaminsanto@gmail.com",
+            "homepage": "http://www.shaperk.com/",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "support@shaperk.com",
+        "forum": "http://forums.whmcs.com/",
+        "wiki": "http://docs.whmcs.com/"
+    }
+}

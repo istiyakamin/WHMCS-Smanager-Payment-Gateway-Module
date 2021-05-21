@@ -1,0 +1,32 @@
+{
+    "schema": "1.0",
+    "type": "whmcs-gateways",
+    "name": "smanager-gateway-module",
+    "license": "MIT",
+    "category": "gateway",
+    "description": {
+        "name": "Smanager Payment Gateway Module",
+        "tagline": "Smanager Payment Gateway modules allow you to integrate smanager payment solutions with the WHMCS platform.",
+        "long": "Smanager Payment Gateway modules allow you to integrate smanager payment solutions with the WHMCS platform.",
+        "features": [
+            "Provide both client and admin facing user interfaces",
+            "Utilize hook functionality within WHMCS"
+        ]
+    },
+    "logo": {
+        "filename": "logo.png"
+    },
+    "support": {
+        "homepage": "https:\/\/www.shaperk.com\/", 
+        "learn_more": "https:\/\/www.shaperk.com\/", 
+        "email": "istiyakaminsanto@gmail.com", 
+        "support_url": "https:\/\/www.shaperk.com\/",
+        "docs_url": "https:\/\/developers.whmcs.com\/payment-gateways\/"
+    },
+    "authors": [
+        {
+            "name": "Istiyak Amin",
+            "homepage": "https:\/\/www.shaperk.com\/"
+        }
+    ]
+}
