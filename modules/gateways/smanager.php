@@ -5,18 +5,6 @@
  * Payment Gateway modules allow you to integrate payment solutions with the
  * WHMCS platform.
  *
- * This sample file demonstrates how a payment gateway module for WHMCS should
- * be structured and all supported functionality it can contain.
- *
- * Within the module itself, all functions must be prefixed with the module
- * filename, followed by an underscore, and then the function name. For this
- * example file, the filename is "smanager" and therefore all functions
- * begin "smanager_".
- *
- * If your module or third party API does not support a given function, you
- * should not define that function within your module. Only the _config
- * function is required.
- *
  * For more information, please refer to the online documentation.
  *
  * @see https://developers.whmcs.com/payment-gateways/
@@ -79,12 +67,12 @@ function smanager_config()
             'Value' => 'Smanager Payment Gateway Module',
         ),
         // a text field type allows for single line text input
-        'accountID' => array(
-            'FriendlyName' => 'Account ID',
+        'clientID' => array(
+            'FriendlyName' => 'Client ID',
             'Type' => 'text',
             'Size' => '25',
             'Default' => '',
-            'Description' => 'Enter your account ID here',
+            'Description' => 'Enter your client ID here',
         ),
         // a password field type allows for masked text input
         'secretKey' => array(
@@ -100,32 +88,23 @@ function smanager_config()
             'Type' => 'yesno',
             'Description' => 'Tick to enable test mode',
         ),
-        // the dropdown field type renders a select menu of options
-        'dropdownField' => array(
-            'FriendlyName' => 'Dropdown Field',
-            'Type' => 'dropdown',
-            'Options' => array(
-                'option1' => 'Display Value 1',
-                'option2' => 'Second Option',
-                'option3' => 'Another Option',
-            ),
-            'Description' => 'Choose one',
+        // a text field type allows for single line text input
+        'success_url' => array(
+            'FriendlyName' => 'Success Url',
+            'Type' => 'text',
+            'Size' => '25',
+            'Default' => '',
+            'Description' => 'Enter your success url here',
         ),
-        // the radio field type displays a series of radio button options
-        'radioField' => array(
-            'FriendlyName' => 'Radio Field',
-            'Type' => 'radio',
-            'Options' => 'First Option,Second Option,Third Option',
-            'Description' => 'Choose your option!',
+        // a text field type allows for single line text input
+        'failed_url' => array(
+            'FriendlyName' => 'Failed Url',
+            'Type' => 'text',
+            'Size' => '25',
+            'Default' => '',
+            'Description' => 'Enter your failed url here',
         ),
-        // the textarea field type allows for multi-line text input
-        'textareaField' => array(
-            'FriendlyName' => 'Textarea Field',
-            'Type' => 'textarea',
-            'Rows' => '3',
-            'Cols' => '60',
-            'Description' => 'Freeform multi-line text input field',
-        ),
+        
     );
 }
 
@@ -146,12 +125,11 @@ function smanager_config()
 function smanager_link($params)
 {
     // Gateway Configuration Parameters
-    $accountId = $params['accountID'];
+    $clientId = $params['clientID'];
     $secretKey = $params['secretKey'];
     $testMode = $params['testMode'];
-    $dropdownField = $params['dropdownField'];
-    $radioField = $params['radioField'];
-    $textareaField = $params['textareaField'];
+    $successUrl = $params['success_url'];
+    $failedUrl = $params['failed_url'];
 
     // Invoice Parameters
     $invoiceId = $params['invoiceid'];
@@ -180,7 +158,46 @@ function smanager_link($params)
     $moduleName = $params['paymentmethod'];
     $whmcsVersion = $params['whmcsVersion'];
 
-    $url = 'https://www.demopaymentgateway.com/do.payment';
+    $send_params = array(
+        'amount' => $amount,
+        'transaction_id' => $invoiceId,
+        'success_url' => $successUrl,
+        'fail_url' => $failedUrl,
+        'customer_name' => $companyName,
+        'customer_mobile' => $phone,
+    );
+
+    $url = 'https://api.sheba.xyz/v1/ecom-payment/initiate';
+
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => $url,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS =>  http_build_query($send_params),
+  CURLOPT_HTTPHEADER => array(
+    "cache-control: no-cache",
+    "client-id: $clientId",
+    "client-secret: $secretKey",
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+    $resp = json_decode($response);
+    // var_dump($resp->data->link);
+}
 
     $postfields = array();
     $postfields['username'] = $username;
@@ -201,7 +218,7 @@ function smanager_link($params)
     $postfields['callback_url'] = $systemUrl . '/modules/gateways/callback/' . $moduleName . '.php';
     $postfields['return_url'] = $returnUrl;
 
-    $htmlOutput = '<form method="post" action="' . $url . '">';
+    $htmlOutput = '<form method="post" action="' . $resp->data->link . '">';
     foreach ($postfields as $k => $v) {
         $htmlOutput .= '<input type="hidden" name="' . $k . '" value="' . urlencode($v) . '" />';
     }

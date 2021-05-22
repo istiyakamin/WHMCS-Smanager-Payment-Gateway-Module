@@ -1,13 +1,6 @@
 <?php
 /**
- * WHMCS Sample Payment Callback File
- *
- * This sample file demonstrates how a payment gateway callback should be
- * handled within WHMCS.
- *
- * It demonstrates verifying that the payment gateway module is active,
- * validating an Invoice ID, checking for the existence of a Transaction ID,
- * Logging the Transaction for debugging and Adding Payment to an Invoice.
+ * WHMCS Smanager Payment Callback File
  *
  * For more information, please refer to the online documentation.
  *
